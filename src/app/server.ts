@@ -3,6 +3,7 @@ dotenv.config();
 import express, { Application } from 'express';
 import cors from "cors";
 
+import db from './database/conection'; 
 
 class Server {
     private app : Application;
@@ -13,18 +14,26 @@ class Server {
 
     constructor() {
         this.app = express();
-        this.port = "3000" || "4000";
+        this.port = process.env.NODE_PORT || "3001";
 
         // conection to db
         this.middlewares();
         this.routes();
-    };
+    }
+
+    async dbConnection() {
+        try {
+            await db.authenticate();
+            console.log('Connection has been established successfully.')
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     middlewares() {
         this.app.use(cors());
         // body parser config
         this.app.use(express.json());
-
         // use passport
     }
 
@@ -41,17 +50,6 @@ class Server {
         });
     }
 
-}
+};
 
 export default Server;
-
-// const app: Application = express();
-// const port = process.env.PORT || 8000;
-
-// app.get('/', (req: Request, res: Response) => {
-//   res.send('Welcome to Express & TypeScript Server');
-// });
-
-// app.listen(port, () => {
-//   console.log(`Server is Fire at http://localhost:${port}`);
-// });

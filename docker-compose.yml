@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  db:
+    image: mariadb
+    env_file: ./.env
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQLDB_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQLDB_DATABASE
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+  
+  app:
+    build: .
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - 3000:3000
